@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ShopEase | Online Shopping</title>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: Arial, sans-serif;
+  background: #f5f7fb;
+  color: #172033;
+}
+nav {
+  background: #101827;
+  color: white;
+  padding: 18px 6%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.logo { font-size: 26px; font-weight: bold; }
+.logo span { color: #67e8f9; }
+.search {
+  flex: 1;
+  max-width: 420px;
+  display: flex;
+}
+.search input {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 6px 0 0 6px;
+  outline: none;
+}
+.search button {
+  padding: 12px 16px;
+  border: none;
+  background: #67e8f9;
+  cursor: pointer;
+  border-radius: 0 6px 6px 0;
+}
+.cart {
+  font-size: 16px;
+  font-weight: bold;
+}
+.categories {
+  background: white;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 15px;
+  box-shadow: 0 2px 5px #0000000c;
+}
+.categories button {
+  background: transparent;
+  border: 1px solid #d8deea;
+  border-radius: 22px;
+  padding: 9px 17px;
+  cursor: pointer;
+}
+.categories button:hover,
+.categories button.active {
+  background: #101827;
+  color: white;
+}
+.banner {
+  margin: 28px auto;
+  width: 90%;
+  max-width: 1300px;
+  padding: 48px;
+  border-radius: 18px;
+  background: linear-gradient(120deg,#101827,#284e70);
+  color: white;
+}
+.banner h1 {
+  font-size: clamp(28px, 5vw, 44px);
+  margin: 12px 0;
+}
+.banner p {
+  color: #d9e5f1;
+  line-height: 1.6;
+}
+.banner .offer {
+  color: #67e8f9;
+  font-weight: bold;
+}
+.banner a {
+  display: inline-block;
+  margin-top: 22px;
+  background: #67e8f9;
+  color: #101827;
+  padding: 12px 20px;
+  border-radius: 7px;
+  text-decoration: none;
+  font-weight: bold;
+}
+.section {
+  width: 90%;
+  max-width: 1300px;
+  margin: 35px auto;
+}
+.section h2 { margin-bottom: 20px; }
+.products {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 22px;
+}
+.card {
+  background: white;
+  border-radius: 13px;
+  overflow: hidden;
+  box-shadow: 0 3px 14px #1720330b;
+  transition: transform .2s;
+}
+.card:hover { transform: translateY(-5px); }
+.product-image {
+  height: 190px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #edf2f8;
+  font-size: 78px;
+  position: relative;
+}
+.discount {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: #fee2e2;
+  color: #be123c;
+  padding: 6px 9px;
+  border-radius: 5px;
+  font-size: 12px;
+  font-weight: bold;
+}
+.details { padding: 17px; }
+.details h3 { font-size: 17px; margin-bottom: 9px; }
+.description {
+  color: #687386;
+  font-size: 13px;
+  line-height: 1.5;
+  min-height: 40px;
+}
+.rating { color: #d69e00; margin: 10px 0; }
+.price { font-size: 20px; font-weight: bold; }
+.old-price {
+  font-size: 13px;
+  color: #8b95a5;
+  text-decoration: line-through;
+  margin-left: 6px;
+}
+.add {
+  width: 100%;
+  margin-top: 14px;
+  background: #101827;
+  color: white;
+  padding: 11px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.add:hover { background: #284e70; }
+.empty { color: #687386; padding: 20px 0; }
+footer {
+  background: #101827;
+  color: #d1d9e6;
+  text-align: center;
+  padding: 28px;
+  margin-top: 50px;
+  line-height: 1.8;
+}
+@media(max-width: 950px) {
+  .products { grid-template-columns: repeat(2, minmax(0,1fr)); }
+}
+@media(max-width: 520px) {
+  nav { padding: 16px 5%; }
+  .logo { font-size: 23px; }
+  .search { order: 3; flex-basis: 100%; max-width: none; }
+  .banner { padding: 30px 22px; }
+  .section { width: 94%; }
+  .products { gap: 12px; }
+  .product-image { height: 135px; font-size: 55px; }
+  .details { padding: 12px; }
+  .details h3 { font-size: 15px; }
+  .price { font-size: 17px; }
+  .old-price { display: block; margin: 5px 0; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">Shop<span>Ease</span></div>
+  <div class="search">
+    <input id="searchInput" type="search"
+      placeholder="Search products...">
+    <button onclick="renderProducts()">Search</button>
+  </div>
+  <div class="cart">🛒 Cart (<span id="cartCount">0</span>)</div>
+</nav>
+
+<div class="categories" id="categories">
+  <button class="active" data-category="All">All Products</button>
+  <button data-category="Electronics">Electronics</button>
+  <button data-category="Fashion">Fashion</button>
+  <button data-category="Home">Home</button>
+  <button data-category="Accessories">Accessories</button>
+</div>
+
+<section class="banner">
+  <p class="offer">THE MEGA SHOPPING FESTIVAL</p>
+  <h1>Big Deals. Better Choices.</h1>
+  <p>Discover your favorites and enjoy amazing savings<br>
+     on selected products.</p>
+  <a href="#shop">Shop Now →</a>
+</section>
+
+<section class="section" id="shop">
+  <h2>Featured Products ✨</h2>
+  <p id="resultMessage"></p>
+  <div class="products" id="productGrid"></div>
+</section>
+
+<footer>
+  <h2>ShopEase</h2>
+  <p>Your everyday shopping destination.</p>
+  <p>Home | Products | Contact Us</p>
+  <p>© 2026 ShopEase. All rights reserved.</p>
+</footer>
+
+<script>
+const products = [
+  {
+    name: "Wireless Headphones",
+    category: "Electronics",
+    emoji: "🎧",
+    price: 1499, old: 2999, rating: 4.8,
+    discount: 50,
+    description: "Enjoy clear sound and comfortable listening."
+  },
+  {
+    name: "Smart Watch",
+    category: "Electronics",
+    emoji: "⌚",
+    price: 1999, old: 3499, rating: 4.6,
+    discount: 43,
+    description: "A stylish watch for everyday activities."
+  },
+  {
+    name: "Running Sneakers",
+    category: "Fashion",
+    emoji: "👟",
+    price: 1899, old: 3499, rating: 4.7,
+    discount: 46,
+    description: "Lightweight shoes for comfort and movement."
+  },
+  {
+    name: "Classic Backpack",
+    category: "Fashion",
+    emoji: "🎒",
+    price: 899, old: 1499, rating: 4.4,
+    discount: 40,
+    description: "A practical bag for college and travel."
+  },
+  {
+    name: "Desk Lamp",
+    category: "Home",
+    emoji: "💡",
+    price: 599, old: 999, rating: 4.3,
+    discount: 40,
+    description: "Brighten your desk or study space."
+  },
+  {
+    name: "Coffee Mug",
+    category: "Home",
+    emoji: "☕",
+    price: 299, old: 499, rating: 4.5,
+    discount: 40,
+    description: "A simple mug for your favorite drinks."
+  },
+  {
+    name: "Sunglasses",
+    category: "Accessories",
+    emoji: "🕶️",
+    price: 499, old: 899, rating: 4.2,
+    discount: 44,
+    description: "Complete your look with modern style."
+  },
+  {
+    name: "Travel Watch",
+    category: "Accessories",
+    emoji: "⌚",
+    price: 1299, old: 1999, rating: 4.6,
+    discount: 35,
+    description: "A versatile accessory for any occasion."
+  }
+];
+
+let selectedCategory = "All";
+let cartCount = 0;
+
+function renderProducts() {
+  const search = document.getElementById("searchInput")
+    .value.toLowerCase().trim();
+
+  const filtered = products.filter(p =>
+    (selectedCategory === "All" ||
+      p.category === selectedCategory) &&
+    (p.name.toLowerCase().includes(search) ||
+      p.description.toLowerCase().includes(search) ||
+      p.category.toLowerCase().includes(search))
+  );
+
+  document.getElementById("resultMessage").textContent =
+    filtered.length + " products found";
+
+  const grid = document.getElementById("productGrid");
+
+  if (filtered.length === 0) {
+    grid.innerHTML =
+      '<p class="empty">No products found. Try another search.</p>';
+    return;
+  }
+
+  grid.innerHTML = filtered.map(p => `
+    <article class="card">
+      <div class="product-image">
+        <span class="discount">${p.discount}% OFF</span>
+        <span aria-hidden="true">${p.emoji}</span>
+      </div>
+      <div class="details">
+        <h3>${p.name}</h3>
+        <p class="description">${p.description}</p>
+        <p class="rating">★ ${p.rating} <span
+          style="color:#687386;font-size:12px">Customer rating</span></p>
+        <p class="price">₹${p.price.toLocaleString("en-IN")}
+          <span class="old-price">₹${p.old.toLocaleString("en-IN")}</span>
+        </p>
+        <button class="add"
+          onclick="addToCart('${p.name}')">
+          Add to Cart +
+        </button>
+      </div>
+    </article>
+  `).join("");
+}
+
+function addToCart(name) {
+  cartCount++;
+  document.getElementById("cartCount").textContent = cartCount;
+  alert(name + " added to your cart!");
+}
+
+document.querySelectorAll("#categories button")
+  .forEach(button => {
+    button.addEventListener("click", () => {
+      selectedCategory = button.dataset.category;
+
+      document.querySelectorAll("#categories button")
+        .forEach(b => b.classList.remove("active"));
+
+      button.classList.add("active");
+      renderProducts();
+    });
+  });
+
+document.getElementById("searchInput")
+  .addEventListener("input", renderProducts);
+
+renderProducts();
+</script>
+
+</body>
+</html>
